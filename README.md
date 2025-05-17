@@ -1,13 +1,16 @@
-# devsecops-25
+# DevSecOps Demo
 
-### Instructions to Build, Configure, and Run the Application
+This repo contains a demo application to showcase some DevSecOps practices. Therefore this repo contains some antipatterns!
+
+### Demo Application
 
 #### Prerequisites
-- Golang 1.16 or later
-- Docker
-- Azure account with an Azure SQL Database and User-assigned Managed Identity
+- Golang
+- Docker (or similar container runtime)
+- Azure CLI
+- Azure subscription with an Azure SQL Database
 
-#### Steps
+#### Build and Run the Application
 
 1. **Clone the repository:**
    ```sh
