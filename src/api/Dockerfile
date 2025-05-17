@@ -1,5 +1,7 @@
 # Use the official Golang image as the build stage
-FROM golang:1.16 AS builder
+FROM golang:1.24.3 AS builder
+
+ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -14,7 +16,7 @@ RUN go mod download
 COPY . .
 
 # Build the Go application as a single binary
-RUN go build -o main .
+RUN go build -a -ldflags="-s -w" -o main .
 
 # Use a lightweight base image for the final container
 FROM scratch
