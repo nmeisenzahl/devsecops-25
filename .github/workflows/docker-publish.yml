@@ -1,4 +1,9 @@
-# Build and Publish Docker Image
+name: Build and Publish Docker Image
+
+# Set minimal permissions to allow pushing to GHCR
+permissions:
+  contents: read
+  packages: write
 
 on:
   push:
