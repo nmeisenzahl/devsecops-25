@@ -41,6 +41,10 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 
 	user, err := h.db.GetUser(id)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
