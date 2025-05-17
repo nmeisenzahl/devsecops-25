@@ -85,6 +85,8 @@ cd src/infra
 
 # Export your Azure subscription ID into the environment for Terraform
 export ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+# If you’re using OIDC-based authentication with Terraform, export the OIDC subject as a variable
+export TF_VAR_oidc_subject="repo:octo-org/octo-repo:ref:refs/heads/main"
 
 # Initialize Terraform (downloads providers, sets up backend)
 terraform init
