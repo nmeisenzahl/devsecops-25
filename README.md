@@ -72,3 +72,36 @@ This repo contains a demo application to showcase some DevSecOps practices. Ther
      ```sh
      curl -X DELETE http://localhost:8080/user/1
      ```
+
+### Azure Infrastructure
+
+The `src/infra` folder contains Terraform code to provision the required Azure resources.
+
+To deploy the infrastructure:
+
+```bash
+# Change to the infra directory
+cd src/infra
+
+# Export your Azure subscription ID into the environment for Terraform
+export ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+
+# Initialize Terraform (downloads providers, sets up backend)
+terraform init
+
+# Preview changes
+terraform plan
+
+# Apply infrastructure changes
+terraform apply \
+  -auto-approve 
+```
+
+After apply completes, Terraform will output the resource group name and location.
+
+To destroy the resources when you are done:
+
+```bash
+terraform destroy \
+  -auto-approve
+```
