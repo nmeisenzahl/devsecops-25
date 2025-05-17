@@ -69,23 +69,3 @@
      ```sh
      curl -X DELETE http://localhost:8080/user/1
      ```
-
-### Implementation Details
-
-#### CRUD Operations and Gin Framework
-The API is implemented using the Gin framework and exposes the following CRUD operations for a dataset (user):
-- `POST /user`: Create a new user
-- `GET /user/:id`: Retrieve a user by ID
-- `PUT /user/:id`: Update a user by ID
-- `DELETE /user/:id`: Delete a user by ID
-
-#### Azure SQL Database and Authentication
-The application uses Azure SQL Database to store user data. Authentication between the API and the database is handled using Azure's User-assigned Managed Identity and DefaultCredentials. The `NewDefaultAzureCredential` method from the Azure Identity SDK is used to fetch a token for authenticating against Azure SQL.
-
-#### Environment Variables
-The following environment variables are required to configure the application:
-- `DB_SERVER`: The Azure SQL server name
-- `DB_DATABASE`: The Azure SQL database name
-
-#### Database Seeding
-The application includes logic to seed the database with initial data if necessary. The seed data is defined in the `src/api/internal/db/seed.go` file and ensures that the database schema matches the current code.

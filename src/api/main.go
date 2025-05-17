@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
 
@@ -16,11 +17,15 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to load configuration: %v", err)
 	}
-
 	// Initialize database connection
-	dbConn, err := db.NewConnection(config)
+	dbConn, err := db.NewConnection(context.Background(), config)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
+	}
+
+	// Seed the database (create tables if needed)
+	if err := dbConn.Seed(); err != nil {
+		log.Fatalf("Failed to seed database: %v", err)
 	}
 
 	// Initialize Gin router

@@ -4,6 +4,11 @@ import (
 	"log"
 )
 
+// LogDebug logs a debug message
+func LogDebug(message string) {
+	log.Printf("Debug: %s", message)
+}
+
 // LogError logs an error message
 func LogError(err error) {
 	if err != nil {

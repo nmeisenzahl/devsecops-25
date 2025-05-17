@@ -2,8 +2,9 @@ package configs
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"log"
+
+	"github.com/spf13/viper"
 )
 
 type Config struct {
@@ -12,9 +13,7 @@ type Config struct {
 }
 
 func LoadConfig() (*Config, error) {
-	viper.SetConfigName("config")
-	viper.SetConfigType("env")
-	viper.AddConfigPath(".")
+	viper.SetConfigFile(".env")
 
 	viper.AutomaticEnv()
 
