@@ -54,7 +54,18 @@ resource "azurerm_container_app" "app" {
       image  = var.container_image
       cpu    = "0.25"
       memory = "0.5Gi"
+      // pass database connection details via environment variables
+      env {
+        name  = "DB_SERVER"
+        value = azurerm_mssql_server.sql.fully_qualified_domain_name
+      }
+      env {
+        name  = "DB_DATABASE"
+        value = azurerm_mssql_database.db.name
+      }
     }
+    min_replicas = 1
+    max_replicas = 3
   }
 
   lifecycle {
@@ -74,7 +85,7 @@ resource "azurerm_mssql_server" "sql" {
   # configure Azure AD admin using the user-assigned identity
   azuread_administrator {
     azuread_authentication_only = true
-    login_username              = azurerm_user_assigned_identity.app_identity.id
+    login_username              = azurerm_user_assigned_identity.app_identity.name
     object_id                   = azurerm_user_assigned_identity.app_identity.principal_id
     tenant_id                   = data.azurerm_client_config.current.tenant_id
   }
