@@ -24,6 +24,9 @@ FROM scratch
 # Copy the binary from the builder stage
 COPY --from=builder /app/main /main
 
+# Define the environment variable for the application
+ENV GIN_MODE=release
+
 # Expose the required port
 EXPOSE 8080
 

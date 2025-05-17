@@ -13,7 +13,10 @@ type Config struct {
 }
 
 func LoadConfig() (*Config, error) {
+	// Load variables from .env file
 	viper.SetConfigFile(".env")
+	// Treat .env as an env-format file
+	viper.SetConfigType("env")
 
 	viper.AutomaticEnv()
 
