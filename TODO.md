@@ -1,2 +1,0 @@
-- [ ] AppGW/WAF
-- [ ] Private Link
