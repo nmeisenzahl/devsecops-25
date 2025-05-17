@@ -2,6 +2,7 @@ name: Build and Publish Docker Image
 
 # Set minimal permissions to allow pushing to GHCR
 permissions:
+  id-token: write
   contents: read
   packages: write
 
@@ -12,6 +13,10 @@ on:
   pull_request:
     branches:
       - main
+
+env:
+  CONTAINER_APP_NAME: devsecops-app
+  RESOURCE_GROUP:     devsecops-rg
 
 jobs:
   build-and-push:
@@ -40,3 +45,21 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:${{ github.sha }}
+      
+      # Azure login for OIDC-based authentication
+      - name: Azure Login using OIDC
+        if: github.event_name == 'push'
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Update the Azure Container App image
+      - name: Update Azure Container App
+        if: github.event_name == 'push'
+        run: |
+          az containerapp update \
+            --name "$CONTAINER_APP_NAME" \
+            --resource-group "$RESOURCE_GROUP" \
+            --image ghcr.io/${{ github.repository }}:${{ github.sha }}
