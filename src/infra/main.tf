@@ -63,6 +63,14 @@ resource "azurerm_container_app" "app" {
         name  = "DB_DATABASE"
         value = azurerm_mssql_database.db.name
       }
+      env {
+        name  = "AZURE_TENANT_ID"
+        value = data.azurerm_client_config.current.tenant_id
+      }
+      env {
+        name  = "AZURE_CLIENT_ID"
+        value = azurerm_user_assigned_identity.app_identity.client_id
+      }
     }
     min_replicas = 1
     max_replicas = 3
@@ -95,4 +103,35 @@ resource "azurerm_mssql_database" "db" {
   name      = "${var.prefix}-db"
   server_id = azurerm_mssql_server.sql.id
   sku_name  = "S0"
+}
+
+resource "azurerm_mssql_firewall_rule" "allow_azure_services" {
+  server_id        = azurerm_mssql_server.sql.id
+  name             = "AllowAll"
+  start_ip_address = "0.0.0.0"
+  end_ip_address   = "0.0.0.0"
+}
+
+# UAI for GitHub Action Workflow
+resource "azurerm_user_assigned_identity" "github_actions" {
+  name                = "${var.prefix}-uai-gh"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+}
+
+resource "azurerm_federated_identity_credential" "github_actions" {
+
+  name                = "${var.prefix}-fedcrd-gh"
+  resource_group_name = azurerm_resource_group.rg.name
+  parent_id           = azurerm_user_assigned_identity.github_actions.id
+  audience            = ["api://AzureADTokenExchange"]
+  issuer              = "https://token.actions.githubusercontent.com"
+  subject             = var.oidc_subject
+}
+
+resource "azurerm_role_assignment" "github_actions" {
+  scope                = azurerm_resource_group.rg.id
+  role_definition_name = "Contributor"
+  principal_id         = azurerm_user_assigned_identity.github_actions.principal_id
+
 }

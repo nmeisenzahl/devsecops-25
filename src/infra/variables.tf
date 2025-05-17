@@ -17,3 +17,9 @@ variable "container_image" {
   type        = string
   default     = "ghcr.io/nmeisenzahl/devsecops-25:latest"
 }
+
+variable "oidc_subject" {
+  description = "OIDC subject for the GitHub Actions workflow"
+  type        = string
+  default     = "repo:nmeisenzahl/devsecops-25:ref:refs/heads/main"
+}
