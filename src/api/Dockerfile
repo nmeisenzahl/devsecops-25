@@ -11,6 +11,8 @@ COPY go.mod go.sum ./
 
 # Download the dependencies
 RUN go mod download
+# Install CA certificates for TLS validation
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 
 # Copy the source code into the container
 COPY . .
@@ -21,6 +23,8 @@ RUN go build -a -ldflags="-s -w" -o main .
 # Use a lightweight base image for the final container
 FROM scratch
 
+# Copy CA certificate store from builder
+COPY --from=builder /etc/ssl/certs /etc/ssl/certs
 # Copy the binary from the builder stage
 COPY --from=builder /app/main /main
 
