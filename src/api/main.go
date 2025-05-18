@@ -32,7 +32,7 @@ func main() {
 	// Initialize Gin router
 	router := gin.Default()
 
-	// Define versioned routes for CRUD operations (v1)
+	// Safe, parameterized endpoints (v1)
 	userHandler := handlers.NewUserHandler(dbConn)
 	v1 := router.Group("/v1")
 	v1.POST("/user", userHandler.CreateUser)
@@ -44,6 +44,9 @@ func main() {
 	v1.GET("/healthz", func(c *gin.Context) {
 		c.Status(http.StatusOK)
 	})
+	// Vulnerable SQL injection demo endpoints (v2)
+	v2 := router.Group("/v2")
+	v2.GET("/user/:id", userHandler.GetUserV2)
 
 	// Start the server
 	port := os.Getenv("PORT")
