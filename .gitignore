@@ -43,4 +43,5 @@ src/infra/.terraform/
 src/infra/*.tfstate
 src/infra/*.tfstate.backup
 src/infra/terraform.tfstate*
-terraformtfstate*
+terraform.tfstate*
+.terraform.tfstate*
