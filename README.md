@@ -74,6 +74,35 @@ This repo contains a demo application to showcase some DevSecOps practices. Ther
      curl -X DELETE http://localhost:8080/v1/user/1
      ```
 
+### Vulnerable SQL Injection Demo (v2 endpoint)
+
+The v2 endpoint is intentionally vulnerable to SQL injection for demonstration purposes. Use with caution.
+
+- **Get a user (vulnerable):**
+
+  ```sh
+  curl http://localhost:8080/v2/user/1
+  ```
+
+- **SQL Injection Example:**
+
+  The `id` parameter is concatenated directly into the query. You can inject arbitrary SQL. For example, to retrieve all users:
+
+  ```sh
+  curl "http://localhost:8080/v2/user/0%20OR%201=1"  # spaces must be URL-encoded
+  ```
+
+  `0%20OR%201=1` could be an attempt to test for SQL injection vulnerabilities, as `OR 1=1` is a common SQL injection payload that always evaluates to true.
+
+  Expected response (all user records):
+
+  ```json
+  [
+    { "id": 1, "name": "John Doe",  "email": "john.doe@example.com" },
+    { "id": 2, "name": "Jane Doe",  "email": "jane.doe@example.com" }
+  ]
+  ```
+
 ### Azure Infrastructure
 
 The `src/infra` folder contains Terraform code to provision the required Azure resources.
@@ -108,3 +137,4 @@ To destroy the resources when you are done:
 terraform destroy \
   -auto-approve
 ```
+````
