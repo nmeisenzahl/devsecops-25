@@ -41,3 +41,9 @@ variable "subnet_pe" {
   type        = string
   default     = "10.0.2.0/24"
 }
+
+variable "appgw_subnet_prefix" {
+  description = "Subnet prefix for Application Gateway"
+  type        = string
+  default     = "10.0.3.0/24"
+}

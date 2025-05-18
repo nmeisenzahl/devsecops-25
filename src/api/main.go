@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -38,6 +39,11 @@ func main() {
 	v1.GET("/user/:id", userHandler.GetUser)
 	v1.PUT("/user/:id", userHandler.UpdateUser)
 	v1.DELETE("/user/:id", userHandler.DeleteUser)
+
+	// Add health check endpoint under v1
+	v1.GET("/healthz", func(c *gin.Context) {
+		c.Status(http.StatusOK)
+	})
 
 	// Start the server
 	port := os.Getenv("PORT")
