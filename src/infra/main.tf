@@ -116,7 +116,7 @@ resource "azurerm_container_app" "app" {
     min_replicas = 1
     max_replicas = 3
   }
-
+  
   lifecycle {
     ignore_changes = [
       template[0].container[0].image
@@ -381,13 +381,13 @@ resource "azurerm_application_gateway" "appgw" {
 
   backend_address_pool {
     name  = "appPool"
-    fqdns = [azurerm_container_app.app.latest_revision_fqdn]
+    fqdns = [azurerm_container_app.app.ingress[0].fqdn]
   }
 
   probe {
     name                = "appProbe"
     protocol            = "Https"
-    host                = azurerm_container_app.app.latest_revision_fqdn
+    host                = azurerm_container_app.app.ingress[0].fqdn
     path                = "/v1/healthz"
     interval            = 60
     timeout             = 30
