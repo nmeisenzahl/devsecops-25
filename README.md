@@ -88,22 +88,16 @@ The v2 endpoint is intentionally vulnerable to SQL injection for demonstration p
 
 - **SQL Injection Example:**
 
-  The `id` parameter is concatenated directly into the query. You can inject arbitrary SQL. For example, to retrieve all users:
+    ```sh
+    curl "http://localhost:8080/v2/user/1%3B%20DROP%20TABLE%20users%3B--"  # spaces must be URL-encoded
+    ```
 
-  ```sh
-  curl "http://localhost:8080/v2/user/0%20OR%201=1"  # spaces must be URL-encoded
-  ```
+  This payload demonstrates a classic SQL injection attack by attempting to drop the `users` table.
+    The SQL query would look like this:
 
-  `0%20OR%201=1` could be an attempt to test for SQL injection vulnerabilities, as `OR 1=1` is a common SQL injection payload that always evaluates to true.
-
-  Expected response (all user records):
-
-  ```json
-  [
-    { "id": 1, "name": "John Doe",  "email": "john.doe@example.com" },
-    { "id": 2, "name": "Jane Doe",  "email": "jane.doe@example.com" }
-  ]
-  ```
+    ```sql
+    SELECT * FROM users WHERE id = '1'; DROP TABLE users;--'
+    ```
 
 ### Azure Infrastructure
 
