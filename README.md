@@ -2,6 +2,8 @@
 
 This repo contains a demo application to showcase some DevSecOps practices. Therefore this repo contains some antipatterns!
 
+The talk slides can be found [here](./devsecops-25.pdf). The vulnerable app version is available in the [PR #8](https://github.com/nmeisenzahl/devsecops-25/pull/8).
+
 ### Demo Application
 
 #### Prerequisites
