@@ -31,12 +31,13 @@ func main() {
 	// Initialize Gin router
 	router := gin.Default()
 
-	// Define routes for CRUD operations
+	// Define versioned routes for CRUD operations (v1)
 	userHandler := handlers.NewUserHandler(dbConn)
-	router.POST("/user", userHandler.CreateUser)
-	router.GET("/user/:id", userHandler.GetUser)
-	router.PUT("/user/:id", userHandler.UpdateUser)
-	router.DELETE("/user/:id", userHandler.DeleteUser)
+	v1 := router.Group("/v1")
+	v1.POST("/user", userHandler.CreateUser)
+	v1.GET("/user/:id", userHandler.GetUser)
+	v1.PUT("/user/:id", userHandler.UpdateUser)
+	v1.DELETE("/user/:id", userHandler.DeleteUser)
 
 	// Start the server
 	port := os.Getenv("PORT")
