@@ -52,25 +52,26 @@ This repo contains a demo application to showcase some DevSecOps practices. Ther
 
 8. **Access the API:**
    The API will be available at `http://localhost:8080`. You can use tools like `curl` or Postman to interact with the endpoints.
+   The API endpoints will be available under the `/v1` prefix at `http://localhost:8080/v1`.
 
    - **Create a user:**
      ```sh
-     curl -X POST http://localhost:8080/user -d '{"name": "John Doe", "email": "john.doe@example.com"}' -H "Content-Type: application/json"
+     curl -X POST http://localhost:8080/v1/user -d '{"name": "John Doe", "email": "john.doe@example.com"}' -H "Content-Type: application/json"
      ```
 
    - **Get a user:**
      ```sh
-     curl http://localhost:8080/user/1
+     curl http://localhost:8080/v1/user/1
      ```
 
    - **Update a user:**
      ```sh
-     curl -X PUT http://localhost:8080/user/1 -d '{"name": "Jane Doe", "email": "jane.doe@example.com"}' -H "Content-Type: application/json"
+     curl -X PUT http://localhost:8080/v1/user/1 -d '{"name": "Jane Doe", "email": "jane.doe@example.com"}' -H "Content-Type: application/json"
      ```
 
    - **Delete a user:**
      ```sh
-     curl -X DELETE http://localhost:8080/user/1
+     curl -X DELETE http://localhost:8080/v1/user/1
      ```
 
 ### Azure Infrastructure
