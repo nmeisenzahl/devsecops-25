@@ -53,6 +53,17 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+// GetUserV2 demonstrates a vulnerable SQL injection endpoint by directly using the path parameter
+func (h *UserHandler) GetUserV2(c *gin.Context) {
+	idParam := c.Param("id")
+	users, err := h.db.GetUserV2(idParam)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, users)
+}
+
 func (h *UserHandler) UpdateUser(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

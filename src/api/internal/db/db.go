@@ -117,6 +117,30 @@ func (db *DB) DeleteUser(id int) error {
 	return nil
 }
 
+// Vulnerable method susceptible to SQL injection demonstration
+func (db *DB) GetUserV2(idParam string) ([]models.User, error) {
+	utils.LogInfo(fmt.Sprintf("DB: GetUserV2 start idParam=%s", idParam))
+	// WARNING: directly concatenating user input into SQL query
+	query := fmt.Sprintf("SELECT id, name, email FROM users WHERE id = %s", idParam)
+	rows, err := db.conn.Query(query)
+	if err != nil {
+		utils.LogError(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []models.User
+	for rows.Next() {
+		var u models.User
+		if err := rows.Scan(&u.ID, &u.Name, &u.Email); err != nil {
+			utils.LogError(err)
+			return nil, err
+		}
+		users = append(users, u)
+	}
+	return users, nil
+}
+
 // Seed runs the database seed logic (e.g., creating tables) using the SeedDatabase helper.
 func (d *DB) Seed() error {
 	utils.LogInfo("DB: seeding database")
