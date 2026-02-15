@@ -39,6 +39,14 @@ resource "azurerm_subnet" "app_env_subnet" {
   virtual_network_name                          = azurerm_virtual_network.vnet.name
   address_prefixes                              = [var.subnet_app]
   private_link_service_network_policies_enabled = true
+
+  delegation {
+    name = "aca-delegation"
+    service_delegation {
+      name    = "Microsoft.App/environments"
+      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+    }
+  }
 }
 
 // Subnet for SQL Private Endpoint to connect securely to SQL Server
@@ -66,6 +74,12 @@ resource "azurerm_container_app_environment" "env" {
   logs_destination           = "log-analytics"
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
   infrastructure_subnet_id   = azurerm_subnet.app_env_subnet.id
+
+  lifecycle {
+    ignore_changes = [
+      infrastructure_resource_group_name
+    ]
+  }
 }
 
 // Container App running the Go API
@@ -116,7 +130,7 @@ resource "azurerm_container_app" "app" {
     min_replicas = 1
     max_replicas = 3
   }
-  
+
   lifecycle {
     ignore_changes = [
       template[0].container[0].image
@@ -196,12 +210,11 @@ resource "azurerm_user_assigned_identity" "github_actions" {
 
 // Federated Identity Credential for GitHub Actions
 resource "azurerm_federated_identity_credential" "github_actions" {
-  name                = "${var.prefix}-fedcrd-gh"
-  resource_group_name = azurerm_resource_group.rg.name
-  parent_id           = azurerm_user_assigned_identity.github_actions.id
-  audience            = ["api://AzureADTokenExchange"]
-  issuer              = "https://token.actions.githubusercontent.com"
-  subject             = var.oidc_subject
+  name      = "${var.prefix}-fedcrd-gh"
+  parent_id = azurerm_user_assigned_identity.github_actions.id
+  audience  = ["api://AzureADTokenExchange"]
+  issuer    = "https://token.actions.githubusercontent.com"
+  subject   = var.oidc_subject
 }
 
 // Role Assignment for GitHub Actions identity in Resource Group
@@ -233,7 +246,7 @@ resource "azurerm_key_vault" "kv" {
   sku_name                   = "standard"
   purge_protection_enabled   = false
   soft_delete_retention_days = 7
-  enable_rbac_authorization  = true
+  rbac_authorization_enabled = true
   network_acls {
     default_action = "Allow"
     bypass         = "AzureServices"
@@ -331,7 +344,7 @@ resource "azurerm_web_application_firewall_policy" "waf_policy" {
   managed_rules {
     managed_rule_set {
       type    = "Microsoft_DefaultRuleSet"
-      version = "2.1"
+      version = "2.2"
     }
     managed_rule_set {
       type    = "Microsoft_BotManagerRuleSet"
